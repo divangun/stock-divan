@@ -20,7 +20,7 @@ public class FileManager {
 	}
 
 	public ArrayList<String> ReadCompanyTable(String data_folder_path) {
-		String fullPath = data_folder_path + "\\CODE_LIST.txt";
+		String fullPath = data_folder_path + "\\CODE_LIST_Train.txt";
 		String line;
 		ArrayList<String> returnArray = new ArrayList<String>();
 

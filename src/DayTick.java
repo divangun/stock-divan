@@ -39,8 +39,13 @@ public class DayTick {
 
 	private int sellMax;
 	private int buyMax;
-	private int sellDay;
-	private int buyDay;
+	private int buyMaxDay;
+	private int sellMaxDay;
+
+	private int buyMin;
+	private int sellMin;
+	private int sellMinDay;
+	private int buyMinDay;
 
 	private String date;
 
@@ -50,6 +55,7 @@ public class DayTick {
 		max = 0;
 		min = 0x7ffffff;
 		sellMax = buyMax = -100000;
+		sellMin = buyMin = 0x7fffffff;
 		start = 0;
 		end = 0;
 		volume = 0;
@@ -203,19 +209,56 @@ public class DayTick {
 		this.buyMax = buyMax;
 	}
 
-	public int getSellDay() {
-		return sellDay;
+	public int getBuyMin() {
+		return buyMin;
 	}
 
-	public void setSellDay(int sellDay) {
-		this.sellDay = sellDay;
+	public void setBuyMin(int buyMin) {
+		this.buyMin = buyMin;
 	}
 
-	public int getBuyDay() {
-		return buyDay;
+	public int getSellMin() {
+		return sellMin;
 	}
 
-	public void setBuyDay(int buyDay) {
-		this.buyDay = buyDay;
+	public void setSellMin(int sellMin) {
+		this.sellMin = sellMin;
 	}
+
+	public int getAverage() {
+		return (this.start + this.end) / 2;
+	}
+
+	public int getBuyMaxDay() {
+		return buyMaxDay;
+	}
+
+	public void setBuyMaxDay(int buyMaxDay) {
+		this.buyMaxDay = buyMaxDay;
+	}
+
+	public int getSellMaxDay() {
+		return sellMaxDay;
+	}
+
+	public void setSellMaxDay(int sellMaxDay) {
+		this.sellMaxDay = sellMaxDay;
+	}
+
+	public int getSellMinDay() {
+		return sellMinDay;
+	}
+
+	public void setSellMinDay(int sellMinDay) {
+		this.sellMinDay = sellMinDay;
+	}
+
+	public int getBuyMinDay() {
+		return buyMinDay;
+	}
+
+	public void setBuyMinDay(int buyMinDay) {
+		this.buyMinDay = buyMinDay;
+	}
+
 }

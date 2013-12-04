@@ -37,4 +37,12 @@ public class CompanyManager {
 		}
 		return returnArray;
 	}
+
+	public void refreshCompany() {
+		list.clear();
+	}
+
+	public boolean containCompany(String code) {
+		return list.containsKey(code);
+	}
 }
