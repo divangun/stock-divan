@@ -47,6 +47,33 @@ public class Company {
 		tempTick.add(tick);
 		tempTickDate = tick.getDate();
 	}
+	public int getTempTickLength(){
+		return tempTick.size();
+	}
+	public boolean isIncrease(){
+		int cnt = 0;
+		Tick now = tempTick.get(tempTick.size()-1);
+		for(Tick temp : tempTick){
+			if(temp.getPrice() < now.getPrice()) cnt++;
+		}
+		
+		if((double)(cnt/tempTick.size()) > 0.7){
+			return true;
+		}
+		else return false;
+	} 
+	
+	public boolean isDecrease(){
+		int cnt = 0;
+		Tick now = tempTick.get(tempTick.size()-1);
+		for(Tick temp : tempTick){
+			if(temp.getPrice() > now.getPrice()) cnt++;
+		}
+		
+		if((double)(cnt/tempTick.size()) > 0.7) return true;
+		else return false;
+	} 
+
 
 	public String getTempTickDate() {
 		return tempTickDate;
@@ -75,13 +102,30 @@ public class Company {
 	public void buyStock(int value, int amount) {
 		hasStock.add(new StockInfo(value, amount));
 	}
-
-	public int calSellStockValue(int value) {
+	
+	public int calSellStockBenefitValue(int value) {
 		int sum = 0;
 		for (StockInfo t : hasStock) {
 			sum += (value - t.getValue()) * t.getVolume();
 		}
 		return sum;
+	}
+	
+
+	public int calSellStockValue(int value) {
+		int sum = 0;
+		for (StockInfo t : hasStock) {
+			sum += value * t.getVolume();
+		}
+		return sum;
+	}
+	public int getSellStockAmount(){
+		int sum = 0;
+		for (StockInfo t : hasStock) {
+			sum += t.getVolume();
+		}
+		return sum;
+		
 	}
 
 	public int getVolume() {
@@ -95,5 +139,10 @@ public class Company {
 
 	public void sellStock() {
 		hasStock.clear();
+	}
+	
+	public int getLastTick(){
+		if(tempTick.size() > 0) return tempTick.get(tempTick.size()-1).getPrice();
+		else return candle.get(candle.size()-1).getEnd();
 	}
 }

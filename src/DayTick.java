@@ -198,7 +198,8 @@ public class DayTick {
 	}
 
 	public void setSellMax(int sellMax) {
-		this.sellMax = sellMax;
+		if (this.sellMax < sellMax)
+			this.sellMax = sellMax;
 	}
 
 	public int getBuyMax() {
@@ -206,7 +207,8 @@ public class DayTick {
 	}
 
 	public void setBuyMax(int buyMax) {
-		this.buyMax = buyMax;
+		if (this.buyMax < buyMax)
+			this.buyMax = buyMax;
 	}
 
 	public int getBuyMin() {
@@ -214,7 +216,8 @@ public class DayTick {
 	}
 
 	public void setBuyMin(int buyMin) {
-		this.buyMin = buyMin;
+		if (this.buyMin > buyMin)
+			this.buyMin = buyMin;
 	}
 
 	public int getSellMin() {
@@ -222,7 +225,8 @@ public class DayTick {
 	}
 
 	public void setSellMin(int sellMin) {
-		this.sellMin = sellMin;
+		if (this.sellMin > sellMin)
+			this.sellMin = sellMin;
 	}
 
 	public int getAverage() {

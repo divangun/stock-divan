@@ -60,17 +60,56 @@ public class ConnectionManager {
 					Msg = br.readLine();
 					Company com;
 					Tick t = new Tick(Msg);
-					if (CompanyManager.getInstance().containCompany(t.getCode())) {
-						com = CompanyManager.getInstance().getCompany(t.getCode());
-						
+					if (CompanyManager.getInstance()
+							.containCompany(t.getCode())) {
+						com = CompanyManager.getInstance().getCompany(
+								t.getCode());
 						if (!com.getTempTickDate().equals(t.getDate())) {
 							com.makeTempTickToDayTick();
 							if (com.getCandle().size() > 10) {
 								PatternInfo patternInfo = pattenCompare(com);
-								com.setBuyValue(patternInfo.calculatePatternValue());
+								com.setBuyValue(patternInfo
+										.calculatePatternValue());
+								System.out.println(com.getBuyValue()+"/"+t.getPrice());
+
 							}
 						}
 						com.addTempTick(t);
+
+						if (com.getBuyValue() > 2.7) {
+							if (com.getTempTickLength() > 10) {
+								if (com.isIncrease() || t.getTime() == 150000) {
+									int amount =(int)(((com.getBuyValue()-2.0)*10000000) / t.getPrice());
+									if(amount*t.getPrice() > main.Value) amount = main.Value / t.getPrice();
+									if(amount > com.getVolume()){
+										amount -= com.getVolume();
+										com.buyStock(t.getPrice(), amount);
+										String write = t.getCode()+"/B/"+amount;
+										System.out.println("Buy");
+										System.out.println(write+"/"+t.getPrice());
+										pw.println(write);
+										pw.flush();
+										
+										main.Value -= t.getPrice()*amount*1.0033;
+									}
+								}
+							}
+						}
+						if (com.hasStock.size() > 0) {
+							if(com.getBuyValue() < 2.4){
+								int sellValue = com.calSellStockValue(t.getPrice());
+								String write = t.getCode()+"/S/"+com.getVolume();
+								System.out.println("Sell");
+								System.out.println(write+"/"+t.getPrice());
+								int tempValue = main.Value;
+								pw.println(write);
+								pw.flush();
+								main.Value += sellValue;
+								com.sellStock();
+							}
+
+						}
+
 					} else {
 						com = new Company();
 						com.setName(t.getCode());
@@ -118,17 +157,20 @@ public class ConnectionManager {
 		float temp = 0;
 		while (iterator.hasNext()) {
 			String trainedPattern = iterator.next();
-			String nowPattern = com.makeDayTickPattern(trainedPattern.length() / 4);
+			String nowPattern = com
+					.makeDayTickPattern(trainedPattern.length() / 4);
 			float patternSmility = evalueatePattern(trainedPattern, nowPattern);
-			if(patternSmility > temp ) temp = patternSmility;
-			patternInfo.addPatternInfo(patternSmility, main.pattern.get(trainedPattern));
-			
+			if (patternSmility > 10)
+				patternInfo.addPatternInfo(patternSmility,
+						main.pattern.get(trainedPattern));
+
 		}
 		return patternInfo;
 	}
 
 	public float evalueatePattern(String pattern, String pattern2) {
-		float[][] smithWarman = new float[pattern.length() + 1][pattern2.length() + 1];
+		float[][] smithWarman = new float[pattern.length() + 1][pattern2
+				.length() + 1];
 		float max = 0;
 		for (int i = 0; i < pattern.length(); i += 4) {
 			for (int j = 0; j < pattern2.length(); j += 4) {
@@ -136,7 +178,7 @@ public class ConnectionManager {
 						pattern2.substring(j, j + 4));
 				if (smithWarman[(i / 4) + 1][(j / 4) + 1] < smithWarman[(i / 4)][(j / 4)]
 						+ genereSmlity) {
-					smithWarman[(i / 4) + 1][(j / 4) + 1] = (smithWarman[(i / 4)][(j / 4)]+ genereSmlity);
+					smithWarman[(i / 4) + 1][(j / 4) + 1] = (smithWarman[(i / 4)][(j / 4)] + genereSmlity);
 				}
 
 				if (smithWarman[(i / 4) + 1][(j / 4) + 1] < smithWarman[(i / 4)][(j / 4) + 1] - 1)
@@ -148,13 +190,7 @@ public class ConnectionManager {
 					max = smithWarman[(i / 4) + 1][(j / 4) + 1];
 			}
 		}
-		if (pattern.length() > pattern2.length())
-			max /= pattern2.length()/4;
-		else
-			max /= pattern.length()/4;
-
 		return max;
-
 	}
 
 	public float genereSmility(String a, String b) {
@@ -167,7 +203,5 @@ public class ConnectionManager {
 			fullValue += 0.6;
 		return fullValue;
 	}
-	
-
 
 }
