@@ -39,7 +39,10 @@ public class Company {
 			return;
 		DayTick temp = new DayTick();
 		temp.makeDayTick(tempTick);
+		
+		if(candle.size()>0) temp.calBType(candle.get(candle.size()-1));
 		candle.add(temp);
+		
 		tempTick.clear();
 	}
 
@@ -85,7 +88,7 @@ public class Company {
 		if (end > size)
 			end = size;
 		for (int i = 0; i < end; i++) {
-			returnString.append("_" + candle.get(i).getType());
+			returnString.append("_" + candle.get(i).getBType() + candle.get(i).getType());
 		}
 		return returnString.toString();
 

@@ -1,9 +1,9 @@
 public class PatternInfo {
 
-	private double plusCnt;
-	private double minusCnt;
-	private double powerPlusCnt;
-	private double powerMinusCnt;
+	private double plusCnt;  // Over 0.33% increase
+	private double minusCnt; // Below 0.33% increase
+	private double powerPlusCnt; // Over 30% increase
+	private double powerMinusCnt; // Over 20% decrease
 	private double normalCnt;
 	private String pattern;
 
@@ -70,8 +70,7 @@ public class PatternInfo {
 	}
 
 	public double calculatePatternValue() {
-		return (powerPlusCnt + plusCnt - minusCnt - powerMinusCnt * 3) / (plusCnt / 10);
-
+		return (powerPlusCnt * 2 + plusCnt - minusCnt - powerMinusCnt * 4) / (plusCnt + minusCnt + powerPlusCnt + powerMinusCnt) + 2;
 	}
 	
 }

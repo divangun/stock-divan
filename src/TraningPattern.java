@@ -49,14 +49,14 @@ public class TraningPattern {
 			}
 			for (int i = 0; i < companyCandle.size(); i++) {
 				DayTick nowDay = companyCandle.get(i);
-				makePattern(nowDay.getSellMaxDay() - 5, i, nowDay.getSellMax(),
-						companyCandle, 1.1, 2);
-				makePattern(nowDay.getSellMinDay() - 5, i, nowDay.getSellMin(),
-						companyCandle, 2.2, 1);
-				makePattern(i - 5, nowDay.getBuyMaxDay(), nowDay.getBuyMax(),
-						companyCandle, 1.1, 2);
-				makePattern(i - 5, nowDay.getBuyMinDay(), nowDay.getBuyMin(),
-						companyCandle, 2.2, 1);
+				makePattern(nowDay.getSellMaxDay() - 10, nowDay.getSellMaxDay()+5, nowDay.getSellMax(),
+						companyCandle, 1, 3);
+				makePattern(nowDay.getSellMinDay() - 10, nowDay.getSellMinDay()+5, nowDay.getSellMin(),
+						companyCandle, 2, 1);
+				makePattern(i - 10, i+5, nowDay.getBuyMax(),
+						companyCandle, 1, 3);
+				makePattern(i - 10, i+5, nowDay.getBuyMin(),
+						companyCandle, 2, 1);
 			}
 		}
 		return pattern;
@@ -68,8 +68,9 @@ public class TraningPattern {
 		PatternInfo temp;
 		if (start < 0)
 			start = 0;
+		if (end > companyCandle.size()-1) end = companyCandle.size()-1;
 		for (int i = 0; i <= end; i++) {
-			patternString+= "_" + companyCandle.get(i).getType();
+			patternString+= "_" + companyCandle.get(i).getBType()+companyCandle.get(i).getType();
 		}
 		if (value > companyCandle.get(start).getAverage() * 0.3) {
 			temp = new PatternInfo(patternString, 0, 0, plusWeight, 0, 0);

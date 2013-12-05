@@ -70,37 +70,45 @@ public class ConnectionManager {
 								PatternInfo patternInfo = pattenCompare(com);
 								com.setBuyValue(patternInfo
 										.calculatePatternValue());
-								System.out.println(com.getBuyValue()+"/"+t.getPrice());
+								System.out.println(com.getBuyValue() + "/"
+										+ t.getPrice());
 
 							}
 						}
 						com.addTempTick(t);
 
-						if (com.getBuyValue() > 2.7) {
+						if (com.getBuyValue() > 1.1) {
 							if (com.getTempTickLength() > 10) {
 								if (com.isIncrease() || t.getTime() == 150000) {
-									int amount =(int)(((com.getBuyValue()-2.0)*10000000) / t.getPrice());
-									if(amount*t.getPrice() > main.Value) amount = main.Value / t.getPrice();
-									if(amount > com.getVolume()){
+									int amount = (int) (((com.getBuyValue() - 1.1) * 10000000) / t
+											.getPrice());
+									if (amount * t.getPrice() > main.Value)
+										amount = main.Value / t.getPrice();
+									if (amount > com.getVolume()) {
 										amount -= com.getVolume();
 										com.buyStock(t.getPrice(), amount);
-										String write = t.getCode()+"/B/"+amount;
+										String write = t.getCode() + "/B/"
+												+ amount;
 										System.out.println("Buy");
-										System.out.println(write+"/"+t.getPrice());
+										System.out.println(write + "/"
+												+ t.getPrice());
 										pw.println(write);
 										pw.flush();
-										
-										main.Value -= t.getPrice()*amount*1.0033;
+
+										main.Value -= t.getPrice() * amount
+												* 1.0033;
 									}
 								}
 							}
 						}
 						if (com.hasStock.size() > 0) {
-							if(com.getBuyValue() < 2.4){
-								int sellValue = com.calSellStockValue(t.getPrice());
-								String write = t.getCode()+"/S/"+com.getVolume();
+							if (com.getBuyValue() < 0.9) {
+								int sellValue = com.calSellStockValue(t
+										.getPrice());
+								String write = t.getCode() + "/S/"
+										+ com.getVolume();
 								System.out.println("Sell");
-								System.out.println(write+"/"+t.getPrice());
+								System.out.println(write + "/" + t.getPrice());
 								int tempValue = main.Value;
 								pw.println(write);
 								pw.flush();
@@ -116,6 +124,8 @@ public class ConnectionManager {
 						com.addTempTick(t);
 						CompanyManager.getInstance().addCompany(com);
 					}
+					if(!date.equals(t.getDate())) System.out.println("Read Start Date : " + t.getDate());
+
 					date = t.getDate();
 
 					Thread.sleep(freq);
@@ -157,10 +167,10 @@ public class ConnectionManager {
 		float temp = 0;
 		while (iterator.hasNext()) {
 			String trainedPattern = iterator.next();
-			String nowPattern = com
-					.makeDayTickPattern(trainedPattern.length() / 4);
+			String nowPattern = com.makeDayTickPattern(trainedPattern.length()
+					/ DayTick.PATTERN_LENGTH);
 			float patternSmility = evalueatePattern(trainedPattern, nowPattern);
-			if (patternSmility > 10)
+			if (patternSmility > 5)
 				patternInfo.addPatternInfo(patternSmility,
 						main.pattern.get(trainedPattern));
 
@@ -169,25 +179,30 @@ public class ConnectionManager {
 	}
 
 	public float evalueatePattern(String pattern, String pattern2) {
-		float[][] smithWarman = new float[pattern.length() + 1][pattern2
-				.length() + 1];
+		float[][] smithWarman = new float[pattern.length()
+				/ DayTick.PATTERN_LENGTH + 1][pattern2.length()
+				/ DayTick.PATTERN_LENGTH + 1];
+		for (int i = 0; i < pattern.length() / DayTick.PATTERN_LENGTH; i++)
+			smithWarman[i][0] = i * -1;
+
 		float max = 0;
-		for (int i = 0; i < pattern.length(); i += 4) {
-			for (int j = 0; j < pattern2.length(); j += 4) {
-				float genereSmlity = genereSmility(pattern.substring(i, i + 4),
-						pattern2.substring(j, j + 4));
-				if (smithWarman[(i / 4) + 1][(j / 4) + 1] < smithWarman[(i / 4)][(j / 4)]
+		for (int i = 0; i < pattern.length(); i += DayTick.PATTERN_LENGTH) {
+			for (int j = 0; j < pattern2.length(); j += DayTick.PATTERN_LENGTH) {
+				float genereSmlity = genereSmility(
+						pattern.substring(i, i + DayTick.PATTERN_LENGTH),
+						pattern2.substring(j, j + DayTick.PATTERN_LENGTH));
+				if (smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] < smithWarman[(i / DayTick.PATTERN_LENGTH)][(j / DayTick.PATTERN_LENGTH)]
 						+ genereSmlity) {
-					smithWarman[(i / 4) + 1][(j / 4) + 1] = (smithWarman[(i / 4)][(j / 4)] + genereSmlity);
+					smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] = (smithWarman[(i / DayTick.PATTERN_LENGTH)][(j / DayTick.PATTERN_LENGTH)] + genereSmlity);
 				}
 
-				if (smithWarman[(i / 4) + 1][(j / 4) + 1] < smithWarman[(i / 4)][(j / 4) + 1] - 1)
-					smithWarman[(i / 4) + 1][(j / 4) + 1] = smithWarman[(i / 4)][(j / 4) + 1] - 1;
-				if (smithWarman[(i / 4) + 1][(j / 4) + 1] < smithWarman[(i / 4) + 1][(j / 4)] - 1)
-					smithWarman[(i / 4) + 1][(j / 4) + 1] = smithWarman[(i / 4)][(j / 4) + 1] - 1;
+				if (smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] < smithWarman[(i / DayTick.PATTERN_LENGTH)][(j / DayTick.PATTERN_LENGTH) + 1] - 1)
+					smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] = smithWarman[(i / DayTick.PATTERN_LENGTH)][(j / DayTick.PATTERN_LENGTH) + 1] - 1;
+				if (smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] < smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH)] - 1)
+					smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] = smithWarman[(i / DayTick.PATTERN_LENGTH)][(j / DayTick.PATTERN_LENGTH) + 1] - 1;
 
-				if (smithWarman[(i / 4) + 1][(j / 4) + 1] > max)
-					max = smithWarman[(i / 4) + 1][(j / 4) + 1];
+				if (smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1] > max)
+					max = smithWarman[(i / DayTick.PATTERN_LENGTH) + 1][(j / DayTick.PATTERN_LENGTH) + 1];
 			}
 		}
 		return max;
@@ -196,11 +211,14 @@ public class ConnectionManager {
 	public float genereSmility(String a, String b) {
 		float fullValue = -1;
 		if (a.charAt(1) == b.charAt(1))
-			fullValue += 2;
+			fullValue += 1.4;
 		if (a.charAt(2) == b.charAt(2))
-			fullValue += 0.4;
+			fullValue += 0.7;
 		if (a.charAt(3) == b.charAt(3))
-			fullValue += 0.6;
+			fullValue += 0.4;
+		if (a.charAt(4) == b.charAt(3))
+			fullValue += 0.5;
+
 		return fullValue;
 	}
 

@@ -1,5 +1,3 @@
-import java.io.ObjectInputStream.GetField;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class main {
@@ -10,14 +8,17 @@ public class main {
 
 	public static void main(String[] args) {
 		FileManager fm = new FileManager();
-		fm.ReadTrainingData("C:\\Alg_SERVER_DATA");
-		BasicInformation t = fm.readBasicInformation("C:\\Alg_CLIENT_DATA\\Basicinformation.txt");
-		
+//		fm.ReadTrainingData("Train");
+		fm.ReadTrainingData("C:\\Alg_SERVER_DATA\\Train");
+
 		TraningPattern tp = new TraningPattern();
 		pattern = tp.makeCandle();
-		
-		CompanyManager.getInstance().refreshCompany();
+		System.out.println("Make pattern Ok");
 
+		CompanyManager.getInstance().refreshCompany();
+		//Traning End
+		BasicInformation t = fm.readBasicInformation("C:\\Alg_CLIENT_DATA\\Basicinformation.txt");
+		System.out.println("read Basicinformation Ok");
 		ConnectionManager con = new ConnectionManager();
 		con.connection(t.getIPaddress(), t.getPort());
 		con.SendAndReceive(t.getFeq());
@@ -30,8 +31,6 @@ public class main {
 			}
 			
 		}
-		
-		System.out.println(main.Value+"");
 	}
 
 }

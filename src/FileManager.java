@@ -12,18 +12,20 @@ public class FileManager {
 
 	public void ReadTrainingData(String data_folder_path) {
 		company_list = ReadCompanyTable(data_folder_path);
+		System.out.println("Read Company List Ok");
 		for (String company : company_list) {
 			Company temp = ReadCompanyAllData(data_folder_path
-					+ "\\Training_Data_Sample\\RawData_Sample", company);
+					+ "\\RawData_Sample", company);
 			CompanyManager.getInstance().addCompany(temp);
 		}
+		System.out.println("Read Company Ok");
+
 	}
 
 	public ArrayList<String> ReadCompanyTable(String data_folder_path) {
 		String fullPath = data_folder_path + "\\CODE_LIST_Train.txt";
 		String line;
 		ArrayList<String> returnArray = new ArrayList<String>();
-
 		BufferedReader buffer;
 		try {
 			buffer = new BufferedReader(new FileReader(fullPath));
@@ -32,6 +34,7 @@ public class FileManager {
 			}
 
 		} catch (Exception e) {
+			System.out.println(e.toString());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

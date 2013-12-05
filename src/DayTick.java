@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class DayTick {
-
+	public static int PATTERN_LENGTH = 5;
 	public static int PLUS_LONG = 111;
 	public static int PLUS_LONG_NO_TAIL = 112;
 	public static int PLUS_LONG_UP_TAIL = 113;
@@ -27,8 +27,8 @@ public class DayTick {
 	public static int DOWN_TAIL = 303;
 	public static int UP_TAIL = 304;
 
-	public static int PLUS = 999;
-	public static int MINUS = 888;
+	public static int PLUS = 0;
+	public static int MINUS = 1;
 
 	private int max;
 	private int min;
@@ -118,21 +118,21 @@ public class DayTick {
 	public void calType() {
 
 		if (start > end) {
-			if ((start - end) / start >= 0.015) {
-				if ((max - start) < 10 && (end - min) < 10)
+			if ((double)(start - end) / start >= 0.015) {
+				if ((max - start) < 3 && (end - min) < 3)
 					type = DayTick.MINUS_LONG_NO_TAIL;
-				else if ((max - start) < 10)
+				else if ((max - start) < 3)
 					type = DayTick.MINUS_LONG_DOWN_TAIL;
-				else if ((end - min) < 10)
+				else if ((end - min) < 3)
 					type = DayTick.MINUS_LONG_UP_TAIL;
 				else
 					type = DayTick.MINUS_LONG;
 			} else {
-				if ((max - start) < 10 && (end - min) < 10)
+				if ((max - start) < 3 && (end - min) < 3)
 					type = DayTick.MINUS_SHORT_NO_TAIL;
-				else if ((max - start) < 10)
+				else if ((max - start) < 3)
 					type = DayTick.MINUS_SHORT_DOWN_TAIL;
-				else if ((end - min) < 10)
+				else if ((end - min) < 3)
 					type = DayTick.MINUS_SHORT_UP_TAIL;
 				else
 					type = DayTick.MINUS_SHORT;
@@ -140,32 +140,32 @@ public class DayTick {
 
 		}
 		if (start < end) {
-			if ((end - start) / start >= 0.015)
-				if ((max - end) < 10 && (start - min) < 10)
+			if ((double)(end - start)/ start >= 0.015)
+				if ((max - end) < 10 && (start - min) < 3)
 					type = DayTick.PLUS_LONG_NO_TAIL;
-				else if ((max - end) < 10)
+				else if ((max - end) < 3)
 					type = DayTick.PLUS_LONG_DOWN_TAIL;
-				else if ((start - min) < 10)
+				else if ((start - min) < 3)
 					type = DayTick.PLUS_LONG_UP_TAIL;
 				else
 					type = DayTick.PLUS_LONG;
 			else {
-				if ((max - end) < 10 && (start - min) < 10)
+				if ((max - end) < 3 && (start - min) < 3)
 					type = DayTick.PLUS_SHORT_NO_TAIL;
-				else if ((max - end) < 10)
+				else if ((max - end) < 3)
 					type = DayTick.PLUS_SHORT_DOWN_TAIL;
-				else if ((start - min) < 10)
+				else if ((start - min) < 3)
 					type = DayTick.PLUS_SHORT_UP_TAIL;
 				else
 					type = DayTick.PLUS_SHORT;
 			}
 		}
 		if (start == end) {
-			if (max - start > 10 && start - min > 10)
+			if (max - start > 3 && start - min > 3)
 				type = DayTick.CROSS;
-			else if (max - start > 10)
+			else if (max - start > 3)
 				type = DayTick.UP_TAIL;
-			else if (start - min > 10)
+			else if (start - min > 3)
 				type = DayTick.DOWN_TAIL;
 			else
 				type = DayTick.LINE;
@@ -178,6 +178,10 @@ public class DayTick {
 			beforeType = DayTick.MINUS;
 		else
 			beforeType = DayTick.PLUS;
+	}
+	
+	public int getBType(){
+		return beforeType;
 	}
 
 	public void makeDayTick(ArrayList<Tick> tick) {
